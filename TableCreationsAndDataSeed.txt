@@ -1,0 +1,78 @@
+-- Create Gender table
+CREATE TABLE Genders (
+    GenderId INT PRIMARY KEY IDENTITY,
+    Type NVARCHAR(10)
+);
+
+-- Create Clients table
+CREATE TABLE Clients (
+    ClientId INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100),
+    GenderId INT FOREIGN KEY REFERENCES Genders(GenderId),
+    Details NVARCHAR(MAX)
+);
+
+-- Create AddressTypes table
+CREATE TABLE AddressTypes (
+    AddressTypeId INT PRIMARY KEY IDENTITY,
+    Type NVARCHAR(50)
+);
+
+-- Create Addresses table
+CREATE TABLE Addresses (
+    AddressId INT PRIMARY KEY IDENTITY,
+    ClientId INT FOREIGN KEY REFERENCES Clients(ClientId),
+    AddressTypeId INT FOREIGN KEY REFERENCES AddressTypes(AddressTypeId),
+    Address NVARCHAR(MAX)
+);
+
+-- Create ContactTypes table
+CREATE TABLE ContactTypes (
+    ContactTypeId INT PRIMARY KEY IDENTITY,
+    Type NVARCHAR(50)
+);
+
+-- Create Contacts table
+CREATE TABLE Contacts (
+    ContactId INT PRIMARY KEY IDENTITY,
+    ClientId INT FOREIGN KEY REFERENCES Clients(ClientId),
+    ContactTypeId INT FOREIGN KEY REFERENCES ContactTypes(ContactTypeId),
+    Contact NVARCHAR(MAX)
+);
+
+-- Insert sample data into Gender table
+INSERT INTO Genders (Type) VALUES 
+('Male'),
+('Female');
+
+-- Insert sample data into Clients table
+INSERT INTO Clients (Name, GenderId, Details) VALUES 
+('John Doe', 1, 'Details about John Doe'),
+('Jane Smith', 2, 'Details about Jane Smith'),
+('Jim Brown', 1, 'Details about Jim Brown'),
+('Jill White', 2, 'Details about Jill White');
+
+-- Insert sample data into AddressTypes table
+INSERT INTO AddressTypes (Type) VALUES 
+('Residential'),
+('Work'),
+('Postal');
+
+-- Insert sample data into Addresses table
+INSERT INTO Addresses (ClientId, AddressTypeId, Address) VALUES 
+(1, 1, '123 Main St, Springfield'),
+(2, 2, '456 Oak St, Springfield'),
+(3, 3, 'PO Box 789, Springfield'),
+(4, 1, '789 Elm St, Springfield');
+
+-- Insert sample data into ContactTypes table
+INSERT INTO ContactTypes (Type) VALUES 
+('Cell'),
+('Work');
+
+-- Insert sample data into Contacts table
+INSERT INTO Contacts (ClientId, ContactTypeId, Contact) VALUES 
+(1, 1, '555-1234'),
+(2, 2, '555-5678'),
+(3, 1, '555-8765'),
+(4, 2, '555-4321');

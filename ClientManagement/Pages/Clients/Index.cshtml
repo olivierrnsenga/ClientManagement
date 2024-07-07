@@ -1,0 +1,72 @@
+﻿@page
+@model ClientsManager.Pages.Clients.IndexModel
+@{
+    ViewData["Title"] = "Clients";
+}
+
+<h2>Clients</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Details</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model.Clients)
+        {
+            var gender = Model.Genders.FirstOrDefault(g => g.GenderId == client.GenderId)?.Type ?? "Not Specified";
+            <tr>
+                <td>@client.Name</td>
+                <td>@gender</td>
+                <td>@client.Details</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@client.ClientId" class="btn btn-primary">Update</a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@client.ClientId" class="d-inline" onsubmit="return confirmDelete(this);">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-page="./Create" class="btn btn-success">Create New Client</a>
+
+<form method="post" asp-page-handler="Export" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Export Clients with Addresses</button>
+</form>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+            </li>
+        }
+        @for (var i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" asp-route-pageNumber="@i">@i</a>
+            </li>
+        }
+        @if (Model.PageNumber < Model.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+@section Scripts {
+    <script type="text/javascript">
+        function confirmDelete(form) {
+            return confirm("Are you sure you want to delete this client?");
+        }
+    </script>
+}

@@ -1,0 +1,132 @@
+﻿@page
+@model ClientsManager.Pages.Clients.CreateModel
+@{
+    ViewData["Title"] = "Create Client";
+}
+
+<h2>Create Client</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Client.Name" class="control-label"></label>
+        <input asp-for="Client.Name" class="form-control" />
+        <span asp-validation-for="Client.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Client.GenderId" class="control-label"></label>
+        <select asp-for="Client.GenderId" class="form-control" asp-items="@(new SelectList(Model.Genders, "GenderId", "Type"))">
+            <option value="">Select Gender</option>
+        </select>
+        <span asp-validation-for="Client.GenderId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Client.Details" class="control-label"></label>
+        <textarea asp-for="Client.Details" class="form-control"></textarea>
+        <span asp-validation-for="Client.Details" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <h4>Addresses</h4>
+        <div id="address-list">
+            @for (int i = 0; i < Model.Client.Addresses.Count; i++)
+            {
+                <div class="form-group">
+                    <label>Type</label>
+                    <select class="form-control" asp-for="Client.Addresses[i].AddressTypeId" asp-items="@(new SelectList(Model.AddressTypes, "AddressTypeId", "Type"))">
+                        <option value="">Select Address Type</option>
+                    </select>
+                    <span asp-validation-for="Client.Addresses[i].AddressTypeId" class="text-danger"></span>
+
+                    <label>Address</label>
+                    <input asp-for="Client.Addresses[i].Address" class="form-control" />
+                    <span asp-validation-for="Client.Addresses[i].Address" class="text-danger"></span>
+
+                    <button type="button" class="btn btn-danger" onclick="removeAddress(this)">Remove</button>
+                </div>
+            }
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="addAddress()">Add Address</button>
+    </div>
+    <div class="form-group">
+        <h4>Contacts</h4>
+        <div id="contact-list">
+            @for (int i = 0; i < Model.Client.Contacts.Count; i++)
+            {
+                <div class="form-group">
+                    <label>Type</label>
+                    <select class="form-control" asp-for="Client.Contacts[i].ContactTypeId" asp-items="@(new SelectList(Model.ContactTypes, "ContactTypeId", "Type"))">
+                        <option value="">Select Contact Type</option>
+                    </select>
+                    <span asp-validation-for="Client.Contacts[i].ContactTypeId" class="text-danger"></span>
+
+                    <label>Contact</label>
+                    <input asp-for="Client.Contacts[i].Contact" class="form-control" />
+                    <span asp-validation-for="Client.Contacts[i].Contact" class="text-danger"></span>
+
+                    <button type="button" class="btn btn-danger" onclick="removeContact(this)">Remove</button>
+                </div>
+            }
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="addContact()">Add Contact</button>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function addAddress() {
+            var index = $('#address-list .form-group').length;
+            var newAddress = `
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control" name="Client.Addresses[${index}].AddressTypeId" required>
+                                <option value="">Select Address Type</option>
+        @foreach (var type in Model.AddressTypes)
+        {
+                                        <option value="@type.AddressTypeId">@type.Type</option>
+        }
+                            </select>
+                            <span class="text-danger" data-valmsg-for="Client.Addresses[${index}].AddressTypeId" data-valmsg-replace="true"></span>
+
+                            <label>Address</label>
+                            <input class="form-control" name="Client.Addresses[${index}].Address" required />
+                            <span class="text-danger" data-valmsg-for="Client.Addresses[${index}].Address" data-valmsg-replace="true"></span>
+
+                            <button type="button" class="btn btn-danger" onclick="removeAddress(this)">Remove</button>
+                        </div>`;
+            $('#address-list').append(newAddress);
+        }
+
+        function removeAddress(button) {
+            $(button).closest('.form-group').remove();
+        }
+
+        function addContact() {
+            var index = $('#contact-list .form-group').length;
+            var newContact = `
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control" name="Client.Contacts[${index}].ContactTypeId" required>
+                                <option value="">Select Contact Type</option>
+        @foreach (var type in Model.ContactTypes)
+        {
+                                        <option value="@type.ContactTypeId">@type.Type</option>
+        }
+                            </select>
+                            <span class="text-danger" data-valmsg-for="Client.Contacts[${index}].ContactTypeId" data-valmsg-replace="true"></span>
+
+                            <label>Contact</label>
+                            <input class="form-control" name="Client.Contacts[${index}].Contact" required />
+                            <span class="text-danger" data-valmsg-for="Client.Contacts[${index}].Contact" data-valmsg-replace="true"></span>
+
+                            <button type="button" class="btn btn-danger" onclick="removeContact(this)">Remove</button>
+                        </div>`;
+            $('#contact-list').append(newContact);
+        }
+
+        function removeContact(button) {
+            $(button).closest('.form-group').remove();
+        }
+    </script>
+}
